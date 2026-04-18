@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+upload/client_secrets.json
+upload/token.pickle
+ffmpeg
+data/shared/*
+data/*png
+data/temp/*
+temp/*
+maintemp.py
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+bin/
+lib/
+
+# Secret files (API keys, tokens)
+.env
+auth.json
+secrets.py
