@@ -6,19 +6,30 @@ from bg_process.bg import generate_bg_video_and_details
 from fg_process.logo_overlay import create_aura_logo_video
 from fg_process.toenail import generate_thumbnail
 from upload.upload_vid import upload_video
+from acestep.acestep_manager import start_acestep, stop_acestep, is_acestep_running
 
 def init_pipeline():
+    request = "A Rock/electronic rock track with a deeply emotional and melancholic tone, carrying an introspective yet slightly aggressive energy. It moves at a moderate tempo, roughly around 105 to 115 BPM, set in a minor key that reinforces its somber atmosphere. The song opens with a soft, ambient intro driven by synth pads and delicate piano notes, gradually easing into a restrained first verse with clean guitar textures and vulnerable vocals. As it progresses, tension builds through layered synths and subtle percussion, leading into a powerful, cathartic chorus where distorted guitars, full drums, and intense vocal delivery take over. The second verse expands on this foundation with added depth, while an atmospheric bridge introduces echoing vocals and electronic elements that heighten the emotional weight. The final chorus reaches peak intensity with layered harmonies, before the track fades out into a reflective outro carried by piano or synth. Throughout, the instrumentation blends clean and distorted guitars, punchy drums, and ambient electronic textures, supporting dynamic male vocals that shift from soft and fragile to powerful and expressive. Lyrically and emotionally, the song explores inner conflict, identity struggles, overwhelming pressure, and the longing to break free from expectations, all wrapped in a polished yet slightly gritty production style."
+
     print("Pipeline initialized.")
 
-    # Start Acestep
-
     # Generate Audio and Timestamps
-    print("Starting Acestep..")
-    request = "Aggressive Rap song with Hip-Hop music. Male and Female Vocals."
+    acestep_proc = None
+    try:
+        if not is_acestep_running():
+            acestep_proc = start_acestep()
+        else:
+            print("⚡ AceStep already running")
 
-    generator = AceStepGenerator()
-    generator.initialize("D:\\CODE\\Python\\Projects\\AceStep\\checkpoints")
-    result = generator.generate_song(request)
+        generator = AceStepGenerator()
+        generator.initialize("D:\\CODE\\Python\\Projects\\AceStep\\checkpoints")
+
+        result = generator.generate_song(request)
+
+    finally:
+        if acestep_proc:
+            stop_acestep(acestep_proc)
+
 
     # Extract audio path and timestamps
     print("Extracting audio and timestamps from result..")
@@ -71,6 +82,25 @@ def init_pipeline():
     thumbnail_path = generate_thumbnail(id= id, title_text=song_name)
 
     # Upload 
+    tags_str = " ".join(f"#{tags}" for tag in tags)
+    description_full = f"""
+    {description}
+
+    .
+    .
+
+    Dive into the sound of emotion, rhythm, and atmosphere with WaveCraft Music.
+
+    From late-night drives to quiet moments of reflection, every track is crafted to take you somewhere else.
+
+    Let the music carry you — whether you're chasing memories, creating new ones, or just vibing in the moment.
+
+    🔔 Subscribe for new music regularly
+    🎧 Turn up the volume and feel the wave
+    {tags_str}
+    
+    """
+    
     print("Final Step: Uploading..")
     upload_video(
         video_path=final_video_path,

@@ -219,21 +219,7 @@ Lyrics with timestamps:
 
 
 def generate_details(lrc_text, request_prompt, model="mistral:7b-instruct"):
-    """
-    Generate comprehensive song details based on LRC text and request prompt.
-    
-    Args:
-        lrc_text: The lyrics with timestamps
-        request_prompt: The user's original song generation request
-        model: Ollama model to use
-    
-    Returns:
-        Dictionary with keys:
-            - 'name': 1-3 word song title
-            - 'description': Evocative description of the song
-            - 'genre': Song genre
-            - 'tags': List of 2-4 tags
-    """
+
     prompt = f"""You are a music producer creating song metadata. Based on the user's request and the generated lyrics, create a JSON object with ONLY these fields:
 
 USER REQUEST: {request_prompt}
@@ -250,7 +236,7 @@ Requirements:
 - name: 1-3 word catchy song title
 - genre: One music genre
 - tags: 2-4 descriptive words in array
-- description: 3-4 sentences about the song
+- description: 1-2 sentences about the song. Eg: 'A powerful thrash metal anthem about the cold and unfeeling nature of humanity hidden behind the urban facade.'
 
 SONG LYRICS:
 {lrc_text}"""
